@@ -55,6 +55,10 @@ app.listen(8080, function () {
   console.log("listening on 8080");
 });
 
+app.get("/", function (요청, 응답) {
+  응답.send("접속완료");
+});
+
 app.get("/api/offices/:officeId", async function (요청, 응답) {
   const officeId = 요청.url.slice(-1);
   await client.connect();
