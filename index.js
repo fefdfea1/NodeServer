@@ -10,17 +10,9 @@ const whitelist = [
   "http://localhost:5173",
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      // 만일 whitelist 배열에 origin인자가 있을 경우
-      callback(null, true); // cors 허용
-    } else {
-      callback(new Error("Not Allowed Origin!")); // cors 비허용
-    }
-  },
+let corsOptions = {
+  origin: whitelist,
 };
-
 app.use(cors(corsOptions));
 
 app.use("/static", express.static(__dirname + "/static"));
@@ -56,7 +48,7 @@ app.listen(8080, function () {
 });
 
 app.get("/", function (요청, 응답) {
-  응답.send("접속완료");
+  응답.sendFile(__dirname + "/index.html");
 });
 
 app.get("/api/offices/:officeId", async function (요청, 응답) {
