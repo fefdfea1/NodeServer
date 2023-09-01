@@ -4,7 +4,11 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 
-const whitelist = ["http://localhost:8080", "http://localhost:8081"];
+const whitelist = [
+  "http://localhost:8080",
+  "http://localhost:8081",
+  "http://localhost:5173",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
