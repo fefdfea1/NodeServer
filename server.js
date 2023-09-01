@@ -1,10 +1,10 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const express = require("express");
 const app = express();
+require("dotenv").config();
 
 app.use("/static", express.static(__dirname + "/static"));
-const uri =
-  "mongodb+srv://user2:officefinder@nextjstodolist.korwwhs.mongodb.net/?retryWrites=true&w=majority";
+const uri = `${process.env.DB_URL}`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -33,10 +33,6 @@ run().catch(console.dir);
 
 app.listen(8080, function () {
   console.log("listening on 8080");
-});
-
-app.get("/", function (요청, 응답) {
-  응답.sendFile(__dirname + "/index.html");
 });
 
 app.get("/api/offices/:officeId", async function (요청, 응답) {
