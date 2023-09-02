@@ -15,7 +15,7 @@ let corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use("/static", express.static(__dirname + "/static"));
+app.use("/public", express.static("public"));
 const uri = `${process.env.DB_URL}`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -25,40 +25,35 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
-
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-
-run().catch(console.dir);
+client.connect();
 
 app.listen(8080, function () {
   console.log("listening on 8080");
 });
 
-app.get("/", function (요청, 응답) {
-  응답.sendFile(__dirname + "/index.html");
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/index.html");
+});
+//이미지 배열
+app.get("/api/offices/ImgList", async function (req, res) {
+  const database = client.db("practiceDataBase");
+  const data = database.collection("ImgList");
+  const getAllData = await data.find().toArray();
+  res.json(getAllData);
+});
+//빈 이미지 배열
+app.get("/api/offices/emptyImgList", async function (req, res) {
+  const data = [];
+  res.json(data);
 });
 
-app.get("/api/offices/:officeId", async function (요청, 응답) {
-  const officeId = 요청.url.slice(-1);
-  await client.connect();
+app.get("/api/offices/:officeId", async function (req, res) {
+  const officeId = req.url.slice(-1);
   const database = client.db("practiceDataBase");
-  const movies = database.collection("practice");
+  const data = database.collection("practice");
   const query = { id: Number(officeId) };
-  const movie = await movies.findOne(query);
+  const movie = await data.findOne(query);
   // Ensures that the client will close when you finish/error
-  응답.json(movie);
-  await client.close();
+  res.json(movie);
 });
+client.close();
